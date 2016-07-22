@@ -1,3 +1,2 @@
 # pocmap
-pocmap
-pocmap!
+pocmap v1.0
