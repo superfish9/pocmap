@@ -34,7 +34,7 @@ class P(T):
                     res_html = res.read()
 
                 except urllib2.HTTPError,e:
-                    print 1
+                    #print 1
                     res_code = e.code
                     res_html = e.read()
                 except urllib2.URLError,e:

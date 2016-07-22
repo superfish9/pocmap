@@ -29,7 +29,7 @@ class P(T):
 
 
             r=requests.get(url=target_url,params=vuln_buffer,timeout=timeout)
-            print r.content
+            #print r.content
             if "请求范围不符合" in r.content:
 
 

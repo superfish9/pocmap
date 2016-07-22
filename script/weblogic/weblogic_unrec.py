@@ -59,7 +59,8 @@ class WeblogicExp:
 
     def __print_msg(self, msg):
         if self.verbose:
-            print msg
+            #print msg
+            pass
 
     def __t3_send(self, payload_bin):
         try:

