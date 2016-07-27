@@ -32,7 +32,11 @@ class P(T):
                   "HttpServletResponse&content={content}".format(url=target_url, content=content)
         #print target_url
         try:
-            res=urllib2.urlopen(poc_url,timeout=timeout)
+            req = urllib2.Request(poc_url)
+            if productname.has_key('cookie'):
+                req.add_header('Cookie', productname['cookie'])
+            #res=urllib2.urlopen(poc_url,timeout=timeout)
+            res = urllib2.urlopen(req,timeout=timeout)
             res_html = res.read()
         except Exception,e:
             print e

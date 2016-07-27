@@ -29,6 +29,8 @@ class P(T):
         #print target_url
         try:
             headers = {"Content-Type":"application/x-www-form-urlencoded"}
+            if productname.has_key('cookie'):
+                headers['Cookie'] = productname['cookie']
             r = requests.post(target_url,data=payload,headers=headers,timeout=5)
             res_html = r.text
         except Exception,e:
