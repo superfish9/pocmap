@@ -1,74 +1,8 @@
 #coding=utf-8
 
-import importlib
 import sys
 import getopt
-import os
-from urlparse import urlparse
-
-is_web = False
-result = []
-
-def handle_url(url):
-    url = urlparse(url)
-    if ':' in url.netloc:
-        target = str(url.netloc.split(':')[0])
-        port = str(url.netloc.split(':')[1])
-    else:
-        target = str(url.netloc)
-        if str(url.scheme) == 'https':
-            port = '443'
-        else:
-            port = '80'
-    path = url.path
-    return target, port, path
-
-def scan(script, target, port, productname):
-    global is_web
-    global result
-
-    for ones in script:
-        if os.path.isdir('script/' + ones):
-            for onef in os.listdir('script/' + ones):
-                if '.py' in onef and '.pyc' not in onef and 't.py' != onef and '__init__.py' != onef:
-                    print '[*] script.' + ones + '.' + onef[:-3], 'testing...',
-                    mod = importlib.import_module('script.' + ones + '.' + onef[:-3])
-                    if is_web:
-                        result.append(mod.P().verify(ip=target, port=port, productname=productname))
-                    else:
-                        result.append(mod.P().verify(ip=target))
-                    if result[-1]['result'] == True:
-                        print '[!]'
-                    else:
-                        print
-        else:
-            if '.py' in onef and '.pyc' not in onef and 't.py' != onef and '__init__.py' != onef:
-                ones = ones.replace('/', '.')
-                print '[*] script.' + ones[:-3], 'testing...',
-                mod = importlib.import_module('script.' + ones[:-3])
-                if is_web:
-                    result.append(mod.P().verify(ip=target, port=port, productname=productname))
-                else:
-                    result.append(mod.P().verify(ip=target))
-                if result[-1]['result'] == True:
-                    print '[!]'
-                else:
-                    print
-    return
-
-def out(output):
-    global result
-
-    wresult = '======================= pocmap v1.0 =======================\n'
-    for oner in result:
-        if oner['result'] == True:
-            for k, v in oner['VerifyInfo'].iteritems():
-                wresult += '{k}: {v}\n'.format(k=k, v=v)
-            wresult += '-----------------------------------------------------------\n'
-    f = open(output, 'w')
-    f.write(wresult)
-    f.close()
-    return
+from lib.api import handle_url, scan, out
 
 def usage():
     print 'pocmap!'
@@ -79,7 +13,7 @@ def usage():
     print 'python pocmap.py -f url_list.txt -o output.txt'
     print
     print 'options:'
-    print '-w --web                              - is web vul, make url valid'
+    print '-w --web                              - is web vul, make url and url_list valid'
     print '-c --cookie=cookie                    - cookie for some web vul'
     print '-u --url=url                          - url'
     print '-t --target=ip/domain                 - ip or domain'
@@ -89,13 +23,10 @@ def usage():
     print '-o --output=output.txt                - file for output, default is output.txt'
     print '-h --help                             - usage'
     print
-    print 'tip: if the target service is default, there is no need for "-w" or "--web".'
     sys.exit(0)
 
 def main():
-    global is_web
-    global result
-
+    is_web = False
     url_list = ''
     target = ''
     port = ''
@@ -138,7 +69,7 @@ def main():
                 script.append(str(one))
 
     print '[***] start.'
-    if url_list != '':
+    if url_list != '' and is_web:
         f = open(url_list, 'r')
         urllist = f.readlines()
         f.close()
@@ -148,16 +79,20 @@ def main():
             target, port, productname['path'] = handle_url(oneu[:-1])
             print '[**] test', target
             scan(script, target, port, productname)
-    elif url != '':
+    elif url != '' and is_web:
         target, port, productname['path'] = handle_url(url)
         print '[**] test', target
         scan(script, target, port, productname)
     else:
+        if target == '' and port == '':
+            print '[^] please use -t and -p, or use -w and -u.'
+            sys.exit(1)
         print '[**] test', target
         scan(script, target, port, productname)
 
-    out(output)
     print '[***] done.'
+    out(output)
+    print '[****] result is in {output}.'.format(output=output)
     return
 
 if __name__ == '__main__':
