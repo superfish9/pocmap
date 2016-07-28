@@ -10,7 +10,7 @@ import json
 import random
 from lib.database import Database
 from lib.httphandle import HttpHandle
-from lib.api import handle_url, scan
+from lib.api import handle_url, scan, handle_target
 
 adminid = 'superfish'
 bind_ip = '127.0.0.1'
@@ -19,8 +19,8 @@ threads = []
 
 def scan_new(headers, body, connection):
     respheader = 'HTTP/1.1 200 OK\r\nServer: pocmapapi\r\n\r\n'
-    target = ''
-    port = ''
+    target_ip = ''
+    target_port = ''
     productname = {}
     respbody = {}
 
@@ -28,13 +28,12 @@ def scan_new(headers, body, connection):
     respbody['state'] = 'fail'
     opt = json.loads(body)
     if opt.has_key('url') and opt.has_key('web'):
-        target, port, productname['path'] = handle_url(opt['url'])
+        target_ip, target_port, productname['path'] = handle_url(opt['url'])
         if opt.has_key('cookie'):
             productname['cookie'] = opt['cookie']
     elif opt.has_key('target'):
         target = opt['target']
-        if opt.has_key('port'):
-            port = opt['port']
+        target_ip, target_port = handle_target(target)
     else:
         connection.send(respheader + str(respbody))
         return
@@ -43,9 +42,9 @@ def scan_new(headers, body, connection):
         respbody['taskid'] = taskid
         respbody['state'] = 'success'
         connection.send(respheader + str(respbody))
-        result = scan(opt['script'], target, port, productname)
+        result = scan(opt['script'], target_ip, target_port, productname)
 
-    
+
     return
 
 def scan_delete(headers, body, connection):
