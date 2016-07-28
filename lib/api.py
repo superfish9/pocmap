@@ -2,10 +2,8 @@ import importlib
 import os
 from urlparse import urlparse
 
-result = []
-
 def scan(script, target, port, productname):
-    global result
+    result = []
 
     for ones in script:
         if os.path.isdir('script/' + ones):
@@ -28,11 +26,9 @@ def scan(script, target, port, productname):
                     print '[!]'
                 else:
                     print
-    return
+    return result
 
-def out(output):
-    global result
-
+def out(output, result):
     wresult = '======================= pocmap v1.0 =======================\n'
     for oner in result:
         if oner['result'] == True:

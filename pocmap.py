@@ -68,6 +68,7 @@ def main():
             if '__init__.py' != one:
                 script.append(str(one))
 
+    result = []
     print '[***] start.'
     if url_list != '' and is_web:
         f = open(url_list, 'r')
@@ -78,20 +79,20 @@ def main():
                 continue
             target, port, productname['path'] = handle_url(oneu[:-1])
             print '[**] test', target
-            scan(script, target, port, productname)
+            result = scan(script, target, port, productname)
     elif url != '' and is_web:
         target, port, productname['path'] = handle_url(url)
         print '[**] test', target
-        scan(script, target, port, productname)
+        result = scan(script, target, port, productname)
     else:
         if target == '' and port == '':
             print '[^] please use -t and -p, or use -w and -u.'
             sys.exit(1)
         print '[**] test', target
-        scan(script, target, port, productname)
+        result = scan(script, target, port)
 
     print '[***] done.'
-    out(output)
+    out(output, result)
     print '[****] result is in {output}.'.format(output=output)
     return
 

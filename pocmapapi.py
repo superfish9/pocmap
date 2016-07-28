@@ -9,6 +9,7 @@ import threading
 import json
 from lib.database import Database
 from lib.httphandle import HttpHandle
+from lib.api import handle_url
 
 adminid = 'superfish'
 bind_ip = '127.0.0.1'
@@ -16,6 +17,17 @@ bind_port = 8776
 threads = []
 
 def scan_new(headers, body):
+    target = ''
+    port = ''
+    productname = {}
+
+    opt = json.loads(body)
+    if opt.has_key('url') and opt.has_key('web'):
+        target, port, productname['path'] = handle_url(opt['url'])
+        if opt.has_key('cookie'):
+            productname['cookie'] = opt['cookie']
+        if opt.has_key('script') and opt['script'] != []:
+            
     return
 
 def scan_delete(headers, body):
