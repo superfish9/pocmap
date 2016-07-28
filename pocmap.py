@@ -1,25 +1,25 @@
 #coding=utf-8
 
+import os
 import sys
 import getopt
-from lib.api import handle_url, scan, out
+from lib.api import handle_url, scan, out, handle_target
 
 def usage():
     print 'pocmap!'
     print
     print 'usage:'
-    print 'python pocmap.py -h ip -p port -s "script1 script2"'
+    print 'python pocmap.py -t ip:port -s "script1 script2"'
     print 'python pocmap.py -u url -w'
-    print 'python pocmap.py -f url_list.txt -o output.txt'
+    print 'python pocmap.py -f url_list.txt -w -o output.txt'
     print
     print 'options:'
     print '-w --web                              - is web vul, make url and url_list valid'
     print '-c --cookie=cookie                    - cookie for some web vul'
     print '-u --url=url                          - url'
-    print '-t --target=ip/domain                 - ip or domain'
-    print '-p --port=port                        - port, default usually for not web vul'
+    print '-t --target=ip/domain:port            - ip or domain : port or default'
     print '-s --script=script                    - specify a script, none for all'
-    print '-f --file=url_list.txt                - url list'   
+    print '-f --file=ut_list.txt                 - web means url_list, or target_list'   
     print '-o --output=output.txt                - file for output, default is output.txt'
     print '-h --help                             - usage'
     print
@@ -27,9 +27,8 @@ def usage():
 
 def main():
     is_web = False
-    url_list = ''
+    ut_list = ''
     target = ''
-    port = ''
     url = ''
     productname = {}
     script = []
@@ -47,11 +46,9 @@ def main():
         elif o in ('-o', '--output'):
             output = str(a).strip()
         elif o in ('-f', '--file'):
-            url_list = str(a).strip()
+            ut_list = str(a).strip()
         elif o in ('-s', '--script'):
             script = str(a).strip().split(' ')
-        elif o in ('-p', '--port'):
-            port = str(a).strip()
         elif o in ('-t' '--target'):
             target = str(a).strip()
         elif o in ('-u', '--url'):
@@ -70,26 +67,40 @@ def main():
 
     result = []
     print '[***] start.'
-    if url_list != '' and is_web:
-        f = open(url_list, 'r')
-        urllist = f.readlines()
-        f.close()
-        for oneu in urllist:
-            if oneu == '\n':
-                continue
-            target, port, productname['path'] = handle_url(oneu[:-1])
-            print '[**] test', target
-            result = scan(script, target, port, productname)
+    if ut_list != '':
+        if is_web:
+            url_list = ut_list
+            f = open(url_list, 'r')
+            urllist = f.readlines()
+            f.close()
+            for oneu in urllist:
+                if oneu == '\n':
+                    continue
+                target_ip, target_port, productname['path'] = handle_url(oneu[:-1])
+                print '[**] test', target_ip
+                result = scan(script, target_ip, target_port, productname)
+        else:
+            target_list = ut_list
+            f = open(target_list, 'r')
+            targetlist = f.readlines()
+            f.close()
+            for onet in targetlist:
+                if onet == '\n':
+                    continue
+                target_ip, target_port = handle_target(onet[:-1])
+                print '[**] test', target_ip
+                result = scan(script, target_ip, target_port)
     elif url != '' and is_web:
-        target, port, productname['path'] = handle_url(url)
-        print '[**] test', target
-        result = scan(script, target, port, productname)
+        target_ip, target_port, productname['path'] = handle_url(url)
+        print '[**] test', target_ip
+        result = scan(script, target_ip, target_port, productname)
     else:
-        if target == '' and port == '':
-            print '[^] please use -t and -p, or use -w and -u.'
+        if target == '':
+            print '[^] please use -t, or use -w and -u.'
             sys.exit(1)
-        print '[**] test', target
-        result = scan(script, target, port)
+        target_ip, target_port = handle_target(target)
+        print '[**] test', target_ip
+        result = scan(script, target_ip, target_port)
 
     print '[***] done.'
     out(output, result)

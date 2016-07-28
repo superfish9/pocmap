@@ -7,36 +7,54 @@ import os
 import importlib
 import threading
 import json
+import random
 from lib.database import Database
 from lib.httphandle import HttpHandle
-from lib.api import handle_url
+from lib.api import handle_url, scan
 
 adminid = 'superfish'
 bind_ip = '127.0.0.1'
 bind_port = 8776
 threads = []
 
-def scan_new(headers, body):
+def scan_new(headers, body, connection):
+    respheader = 'HTTP/1.1 200 OK\r\nServer: pocmapapi\r\n\r\n'
     target = ''
     port = ''
     productname = {}
+    respbody = {}
 
+    result = []
+    respbody['state'] = 'fail'
     opt = json.loads(body)
     if opt.has_key('url') and opt.has_key('web'):
         target, port, productname['path'] = handle_url(opt['url'])
         if opt.has_key('cookie'):
             productname['cookie'] = opt['cookie']
-        if opt.has_key('script') and opt['script'] != []:
-            
+    elif opt.has_key('target'):
+        target = opt['target']
+        if opt.has_key('port'):
+            port = opt['port']
+    else:
+        connection.send(respheader + str(respbody))
+        return
+    if opt.has_key('script') and opt['script'] != []:
+        taskid = str(random.randint(1000000000, 9999999999))
+        respbody['taskid'] = taskid
+        respbody['state'] = 'success'
+        connection.send(respheader + str(respbody))
+        result = scan(opt['script'], target, port, productname)
+
+    
     return
 
-def scan_delete(headers, body):
+def scan_delete(headers, body, connection):
     return
 
-def scan_data(headers, body):
+def scan_data(headers, body, connection):
     return
 
-def admin_list(headers, body):
+def admin_list(headers, body, connection):
     return
 
 
@@ -46,7 +64,6 @@ def handle_client(connection):
               '/scan/data':scan_data,
               '/admin/list':admin_list}
     
-    respheader = 'HTTP/1.1 200 OK\r\nServer: pocmapapi\r\n\r\n'
     try:
         connection.settimeout(5)
         buf = connection.recv(1024)
@@ -55,8 +72,7 @@ def handle_client(connection):
         headers = req.get_headers()
         body = req.get_body()
         if switch.has_key(path):
-            respbody = switch[path](headers, body)
-        connection.send(respheader + str(respbody))
+            switch[path](headers, body, connection)
     except socket.timeout:
         pass
     finally:

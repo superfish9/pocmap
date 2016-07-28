@@ -2,7 +2,7 @@ import importlib
 import os
 from urlparse import urlparse
 
-def scan(script, target, port, productname):
+def scan(script, target_ip, target_port, productname={}):
     result = []
 
     for ones in script:
@@ -11,7 +11,10 @@ def scan(script, target, port, productname):
                 if '.py' in onef and '.pyc' not in onef and 't.py' != onef and '__init__.py' != onef:
                     print '[*] script.' + ones + '.' + onef[:-3], 'testing...',
                     mod = importlib.import_module('script.' + ones + '.' + onef[:-3])
-                    result.append(mod.P().verify(ip=target, port=port, productname=productname))
+                    if target_port != '':
+                        result.append(mod.P().verify(ip=target_ip, port=target_port, productname=productname))
+                    else:
+                        result.append(mod.P().verify(ip=target_ip, productname=productname))
                     if result[-1]['result'] == True:
                         print '[!]'
                     else:
@@ -21,7 +24,10 @@ def scan(script, target, port, productname):
                 ones = ones.replace('/', '.')
                 print '[*] script.' + ones[:-3], 'testing...',
                 mod = importlib.import_module('script.' + ones[:-3])
-                result.append(mod.P().verify(ip=target, port=port, productname=productname))
+                if target_port != '':
+                    result.append(mod.P().verify(ip=target_ip, port=target_port, productname=productname))
+                else:
+                    result.append(mod.P().verify(ip=target_ip, productname=productname))
                 if result[-1]['result'] == True:
                     print '[!]'
                 else:
@@ -43,13 +49,23 @@ def out(output, result):
 def handle_url(url):
     url = urlparse(url)
     if ':' in url.netloc:
-        target = str(url.netloc.split(':')[0])
-        port = str(url.netloc.split(':')[1])
+        target_ip = str(url.netloc.split(':')[0])
+        target_port = str(url.netloc.split(':')[1])
     else:
-        target = str(url.netloc)
+        target_ip = str(url.netloc)
         if str(url.scheme) == 'https':
-            port = '443'
+            target_port = '443'
         else:
-            port = '80'
+            target_port = '80'
     path = url.path
-    return target, port, path
+    return target_ip, target_port, path
+
+def handle_target(target):
+    target_ip = ''
+    target_port = ''
+    if ':' in target:
+        target_ip = target.split(':')[0]
+        target_port = target.split(':')[1]
+    else:
+        target_ip = target
+    return target_ip, target_port
