@@ -11,6 +11,7 @@ def usage():
     print 'usage:'
     print 'python pocmap.py -t ip:port -s "script1 script2"'
     print 'python pocmap.py -u url -w'
+    print 'python pocmap.py -f target_list.txt'
     print 'python pocmap.py -f url_list.txt -w -o output.txt'
     print
     print 'options:'

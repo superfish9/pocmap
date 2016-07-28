@@ -44,7 +44,7 @@ def scan_new(headers, body, connection):
         connection.send(respheader + str(respbody))
         result = scan(opt['script'], target_ip, target_port, productname)
 
-
+    
     return
 
 def scan_delete(headers, body, connection):
