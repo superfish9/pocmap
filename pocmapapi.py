@@ -17,7 +17,7 @@ bind_ip = '127.0.0.1'
 bind_port = 8776
 threads = []
 
-def scan_new(headers, body, connection):
+def scan_new(headers, body, connection, db):
     respheader = 'HTTP/1.1 200 OK\r\nServer: pocmapapi\r\n\r\n'
     target_ip = ''
     target_port = ''
@@ -41,23 +41,27 @@ def scan_new(headers, body, connection):
         taskid = str(random.randint(1000000000, 9999999999))
         respbody['taskid'] = taskid
         respbody['state'] = 'success'
+        db.execute("insert into data(taskid, status) values('{taskid}', 'running');".format(taskid=taskid))
+        db.commit()
         connection.send(respheader + str(respbody))
         result = scan(opt['script'], target_ip, target_port, productname)
-
-    
+        db.execute("update data set status='terminal', vuls='{result}' where taskid={taskid};".format(result=str(result), taskid=taskid))
+        db.commit()
+    else:
+        connection.send(respheader + str(respbody))
     return
 
-def scan_delete(headers, body, connection):
+def scan_delete(headers, body, connection, db):
     return
 
-def scan_data(headers, body, connection):
+def scan_data(headers, body, connection, db):
     return
 
-def admin_list(headers, body, connection):
+def admin_list(headers, body, connection, db):
     return
 
 
-def handle_client(connection):
+def handle_client(connection, db):
     switch = {'/scan/new':scan_new,
               '/scan/delete':scan_delete,
               '/scan/data':scan_data,
@@ -71,7 +75,7 @@ def handle_client(connection):
         headers = req.get_headers()
         body = req.get_body()
         if switch.has_key(path):
-            switch[path](headers, body, connection)
+            switch[path](headers, body, connection, db)
     except socket.timeout:
         pass
     finally:
@@ -83,15 +87,20 @@ def server_loop():
     global bind_port
     global threads
 
+    db = Database()
+    db.connect()
+    db.init()
+    db.commit()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((bind_ip, bind_port))
     s.listen(20)
     while True:
         connection, address = s.accept()
-        t = threading.Thread(target=handle_client, args=(connection,))
+        t = threading.Thread(target=handle_client, args=(connection, db))
         threads.append(t)
         t.setDaemon(True)
         t.start()
+    db.disconnect()
     return
 
 
