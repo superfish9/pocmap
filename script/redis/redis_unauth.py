@@ -10,7 +10,7 @@ import socket
 class P(T):
     def __init__(self):
         T.__init__(self)
-    def verify(self,head='',context='',ip='',port='6739',productname={},keywords='',hackinfo=''):
+    def verify(self,head='',context='',ip='',port='6379',productname={},keywords='',hackinfo=''):
 
         result = {}
         result['result']=False

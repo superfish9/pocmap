@@ -39,7 +39,7 @@ def out(output, result):
     for oner in result:
         if oner['result'] == True:
             for k, v in oner['VerifyInfo'].iteritems():
-                wresult += '{k}: {v}\n'.format(k=k, v=v)
+                wresult += '{k}: {v}\n'.format(k=str(k), v=str(v))
             wresult += '-----------------------------------------------------------\n'
     f = open(output, 'w')
     f.write(wresult)
