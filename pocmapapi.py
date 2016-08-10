@@ -16,9 +16,19 @@ adminid = 'superfish'
 bind_ip = '127.0.0.1'
 bind_port = 8776
 threads = []
+delete = {}
+
+def t_scan(opt, target_ip, target_port, productname, taskid, db):
+    db.execute("insert into data(taskid, status) values('{taskid}', 'running');".format(taskid=taskid))
+    db.commit()
+    result = scan(opt['script'], target_ip, target_port, productname)
+    db.execute("update data set status='terminal', vuls='{result}' where taskid={taskid};".format(result=str(result), taskid=taskid))
+    db.commit()
+    return
 
 def scan_new(headers, body, connection, db):
-    respheader = 'HTTP/1.1 200 OK\r\nServer: pocmapapi\r\n\r\n'
+    global delete
+    respheader = 'HTTP/1.1 200 OK\r\nServer: pocmapapi/scan_new\r\n\r\n'
     target_ip = ''
     target_port = ''
     productname = {}
@@ -41,17 +51,34 @@ def scan_new(headers, body, connection, db):
         taskid = str(random.randint(1000000000, 9999999999))
         respbody['taskid'] = taskid
         respbody['state'] = 'success'
-        db.execute("insert into data(taskid, status) values('{taskid}', 'running');".format(taskid=taskid))
-        db.commit()
+        t = threading.Thread(target=t_scan, args=(opt, target_ip, target_port, productname, taskid, db))
+        t.setDaemon(True)
+        t.start()
         connection.send(respheader + str(respbody))
-        result = scan(opt['script'], target_ip, target_port, productname)
-        db.execute("update data set status='terminal', vuls='{result}' where taskid={taskid};".format(result=str(result), taskid=taskid))
-        db.commit()
     else:
         connection.send(respheader + str(respbody))
+
+    delete[taskid] = False
+    while True:
+        if not t.isAlive() or delete[taskid]:
+            break
     return
 
 def scan_delete(headers, body, connection, db):
+    global delete
+    respheader = 'HTTP/1.1 200 OK\r\nServer: pocmapapi/scan_delete\r\n\r\n'
+    respbody = {}
+
+    respbody['state'] = 'fail'
+    if headers.has_key('Taskid'):
+        taskid = headers['Taskid']
+        delete[taskid] = True
+        db.execute("delete from data where taskid={};".format(taskid=taskid))
+        db.commit()
+        respbody['state'] = 'success'
+        connection.send(respheader + str(respbody))
+    else:
+        connection.send(respheader + str(respbody))
     return
 
 def scan_data(headers, body, connection, db):
