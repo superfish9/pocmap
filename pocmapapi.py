@@ -54,9 +54,7 @@ def scan_new(headers, body, connection, db):
         t = threading.Thread(target=t_scan, args=(opt, target_ip, target_port, productname, taskid, db))
         t.setDaemon(True)
         t.start()
-        connection.send(respheader + str(respbody))
-    else:
-        connection.send(respheader + str(respbody))
+    connection.send(respheader + str(respbody))
 
     delete[taskid] = False
     while True:
@@ -76,17 +74,36 @@ def scan_delete(headers, body, connection, db):
         db.execute("delete from data where taskid={};".format(taskid=taskid))
         db.commit()
         respbody['state'] = 'success'
-        connection.send(respheader + str(respbody))
-    else:
-        connection.send(respheader + str(respbody))
+    connection.send(respheader + str(respbody))
     return
 
 def scan_data(headers, body, connection, db):
+    respheader = 'HTTP/1.1 200 OK\r\nServer: pocmapapi/scan_data\r\n\r\n'
+    respbody = {}
+
+    respbody['state'] = 'fail'
+    if headers.has_key('Taskid'):
+        taskid = headers['Taskid']
+        bodystr = db.execute('select status, vuls from data where taskid={};'.format(taskid=taskid))
+        respbody['state'] = 'success'
+        respbody['data'] = str(bodystr)
+    connection.send(respheader + str(respbody))
     return
 
 def admin_list(headers, body, connection, db):
-    return
+    global adminid
+    respheader = 'HTTP/1.1 200 OK\r\nServer: pocmapapi/admin_list\r\n\r\n'
+    respbody = {}
 
+    respbody['state'] = 'fail'
+    if headers.has_key('Adminid'):
+        Adminid = headers['Adminid']
+        if Adminid == adminid:
+            bodystr = db.execute('select taskid, status, vuls from data;')
+            respbody['state'] = 'success'
+            respbody['list'] = str(bodystr)
+    connection.send(respheader + str(respbody))
+    return
 
 def handle_client(connection, db):
     switch = {'/scan/new':scan_new,
