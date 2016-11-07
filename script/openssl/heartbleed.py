@@ -44,6 +44,7 @@ class P(T):
         r=None
 
         usecommand='python '+os.path.split(os.path.realpath(__file__))[0]+'/script/heartbleedpoc.py '+ip+' -p '+port
+
         try:
             msgresult = command(usecommand, timeout=3)
             print msgresult
@@ -63,4 +64,4 @@ class P(T):
                 r.close()
             return result
 if __name__ == '__main__':
-    print P().verify(ip='58.213.14.178',port='443')
+    print P().verify(ip='222.92.116.25',port='443')

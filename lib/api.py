@@ -1,5 +1,6 @@
 import importlib
 import os
+import time
 from urlparse import urlparse
 
 def scan(script, target_ip, target_port, productname={}):
@@ -20,7 +21,7 @@ def scan(script, target_ip, target_port, productname={}):
                     else:
                         print
         else:
-            if '.py' in onef and '.pyc' not in onef and 't.py' != onef and '__init__.py' != onef:
+            if '.py' in ones and '.pyc' not in ones and 't.py' != ones and '__init__.py' != ones:
                 ones = ones.replace('/', '.')
                 print '[*] script.' + ones[:-3], 'testing...',
                 mod = importlib.import_module('script.' + ones[:-3])
