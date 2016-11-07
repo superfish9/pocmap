@@ -18,14 +18,14 @@ class P(T):
             s.connect((ip, int(port)))
             s.send(payload)
             recvdata = s.recv(2048)  # response larger than 1024
-    
-        if recvdata and 'STAT version' in recvdata:
-            result['result']=True
-            result['VerifyInfo'] = {}
-            result['VerifyInfo']['type']='Memcached unauth'
-            result['VerifyInfo']['URL'] =ip+':'+port
-            result['VerifyInfo']['payload']='None'
-            result['VerifyInfo']['result'] ='Memcached unauth'
+
+            if recvdata and 'STAT version' in recvdata:
+                result['result']=True
+                result['VerifyInfo'] = {}
+                result['VerifyInfo']['type']='Memcached unauth'
+                result['VerifyInfo']['URL'] =ip+':'+port
+                result['VerifyInfo']['payload']='None'
+                result['VerifyInfo']['result'] ='Memcached unauth'
 
         except Exception,e:
             print e.text
