@@ -1,3 +1,5 @@
+from gevent import monkey; monkey.patch_all()
+import gevent
 import importlib
 import os
 import time
@@ -5,35 +7,34 @@ from urlparse import urlparse
 
 def scan(script, target_ip, target_port, productname={}):
     result = []
-
+    g_list = []
     for ones in script:
         if os.path.isdir('script/' + ones):
             for onef in os.listdir('script/' + ones):
                 if '.py' in onef and '.pyc' not in onef and 't.py' != onef and '__init__.py' != onef:
-                    print '[*] script.' + ones + '.' + onef[:-3], 'testing...',
+                    doc = 'scrpit.' + ones + '.' + onef[:-3]
                     mod = importlib.import_module('script.' + ones + '.' + onef[:-3])
-                    if target_port != '':
-                        result.append(mod.P().verify(ip=target_ip, port=target_port, productname=productname))
-                    else:
-                        result.append(mod.P().verify(ip=target_ip, productname=productname))
-                    if result[-1]['result'] == True:
-                        print '[!]'
-                    else:
-                        print
+                    g_list.append(gevent.spawn(g_scan, doc, result, mod, target_ip, target_port, productname))
         else:
             if '.py' in ones and '.pyc' not in ones and 't.py' != ones and '__init__.py' != ones:
                 ones = ones.replace('/', '.')
-                print '[*] script.' + ones[:-3], 'testing...',
+                doc = 'scrpit.' + ones[:-3]
                 mod = importlib.import_module('script.' + ones[:-3])
-                if target_port != '':
-                    result.append(mod.P().verify(ip=target_ip, port=target_port, productname=productname))
-                else:
-                    result.append(mod.P().verify(ip=target_ip, productname=productname))
-                if result[-1]['result'] == True:
-                    print '[!]'
-                else:
-                    print
+                g_list.append(gevent.spawn(g_scan, doc, result, mod, target_ip, target_port, productname))
+    gevent.joinall(g_list)
     return result
+    
+def g_scan(doc, result, mod, target_ip, target_port, productname={}):
+    g_result = {}
+    print '[*]', doc, 'testing...'
+    if target_port != '':
+        g_result = mod.P().verify(ip=target_ip, port=target_port, productname=productname)
+    else:
+        g_result = mod.P().verify(ip=target_ip, productname=productname)
+    result.append(g_result)
+    if g_result['result'] == True:
+        print '[!]', doc
+    return
 
 def out(output, result):
     wresult = '======================= pocmap v1.0 =======================\n'
