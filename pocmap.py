@@ -79,7 +79,7 @@ def main():
                     continue
                 target_ip, target_port, productname['path'] = handle_url(oneu[:-1])
                 print '[**] test', target_ip
-                result = scan(script, target_ip, target_port, productname)
+                result += scan(script, target_ip, target_port, productname)
         else:
             target_list = ut_list
             f = open(target_list, 'r')
@@ -90,7 +90,7 @@ def main():
                     continue
                 target_ip, target_port = handle_target(onet[:-1])
                 print '[**] test', target_ip
-                result = scan(script, target_ip, target_port)
+                result += scan(script, target_ip, target_port)
     elif url != '' and is_web:
         target_ip, target_port, productname['path'] = handle_url(url)
         print '[**] test', target_ip
