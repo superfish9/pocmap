@@ -3,6 +3,9 @@
 import sqlite3
 
 class Database(object):
+    '''
+    database handle for sqlite3.
+    '''
     filepath = 'data/pocmapapi.db'
 
     def __init__(self, database=None):
