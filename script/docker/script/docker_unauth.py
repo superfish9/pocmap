@@ -82,10 +82,10 @@ Upgrade: tcp
             print sock.recv(1024*10)
 
     def cmd_run(self, url, step):
-        print notice
+        #print notice
         urlinfo = urlparse(url)
         baseurl = urlunparse((urlinfo.scheme, urlinfo.netloc, '/', '', '', ''))
-        print "Checking "+baseurl
+        #print "Checking "+baseurl
         host, port = urlinfo.netloc.split(":")
         socket.setdefaulttimeout(5)
         try:
@@ -131,14 +131,14 @@ Upgrade: tcp
                     count = count + 1
 
             if len(DocerVulns) == 0:
-                print "nothing can be used!"
+                #print "nothing can be used!"
                 sock.close()
                 return
             else:
                 self.choosedocker(sock, DocerVulns)
                 sock.close()
         except Exception, e:
-            print "Failed to connection target"
+            #print "Failed to connection target"
             exit(0)
             sock.close()
 
