@@ -34,8 +34,8 @@ class Database(object):
                     self.cursor.execute(statement, arguments)
                 else:
                     self.cursor.execute(statement)
+                self.commit()
             except sqlite3.OperationalError, ex:
-                if not "locked" in getSafeExString(ex):
                     raise
             else:
                 break
