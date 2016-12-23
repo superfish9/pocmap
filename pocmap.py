@@ -25,7 +25,7 @@ def usage():
     print '-c --cookie=cookie              - cookie for some web vul'
     print '-u --url=url                    - url'
     print '-t --target=ip/domain:port      - ip or domain : port or default'
-    print '-l --lnumber=lnumber            - number of thread, valid with -f, default is 20'
+    print '-l --lnumber=lnumber            - number of thread, valid with -f, default is 10'
     print '-s --script=script              - specify a script, none for all'
     print '-f --file=ut_list.txt           - web means url_list, or target_list'   
     print '-o --output=output.txt          - file for output, default is output.txt'
@@ -38,7 +38,7 @@ def main():
     ut_list = ''
     target = ''
     url = ''
-    lnumber = 20
+    lnumber = 10
     productname = {}
     script = []
     output = 'output.txt'

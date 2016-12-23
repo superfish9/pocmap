@@ -1,0 +1,11 @@
+======================= pocmap v1.0 =======================
+URL: www.ccwqtv.com/cacti.sql
+type: cacti file disclosure
+payload: IP/cacti.sql
+result: 
+-----------------------------------------------------------
+URL: www.bluehn.com/cacti.sql
+type: cacti file disclosure
+payload: IP/cacti.sql
+result: 
+-----------------------------------------------------------
