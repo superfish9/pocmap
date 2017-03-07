@@ -34,7 +34,7 @@ class P(T):
         #print target_url
         try:
             register_openers()
-            datagen, headers = multipart_encode({"image1": open("tmp/tmp.txt", "rb")})
+            datagen, headers = multipart_encode({"image1": open("tmp/s2-045.txt", "rb")})
             headers['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
             headers['Content-Type'] = payload
             if productname.has_key('cookie'):
