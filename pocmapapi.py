@@ -133,7 +133,7 @@ def server_loop():
 
     db = Database()
     db.connect()
-    db.init()
+    #db.init()
     db.commit()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((bind_ip, bind_port))
@@ -147,4 +147,6 @@ def server_loop():
     db.disconnect()
     return
 
+if __name__ == '__main__':
+    server_loop()
 

