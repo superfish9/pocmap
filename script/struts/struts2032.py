@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 from t import T
-import random,urllib2
+import random,requests,urllib2
 class P(T):
     def __init__(self):
         T.__init__(self)
@@ -51,12 +51,21 @@ class P(T):
               "content}".format(url=target_url, filename=jsp_file, content=content)
         #print target_url
         try:
+            '''
             req = urllib2.Request(poc_url)
             if productname.has_key('cookie'):
                 req.add_header('Cookie', productname['cookie'])
             #res=urllib2.urlopen(poc_url,timeout=timeout)
+            req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0')
             res = urllib2.urlopen(req,timeout=timeout)
             res_html = res.read()
+            '''
+            headers = {}
+            headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0';
+            if productname.has_key('cookie'):
+                headers['Cookie'] = productname['cookie'] 
+            res = requests.get(poc_url, headers=headers, timeout=timeout)
+            res_html = res.content
         except Exception,e:
             print e
             return result
@@ -76,7 +85,7 @@ class P(T):
         return result
 
 if __name__ == '__main__':
-    print P().verify(ip='www.htzai.com',port='80')                
+    print P().verify(ip='202.5.22.8',port='8080')                
             
             
             
